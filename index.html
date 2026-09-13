@@ -60,8 +60,28 @@
       </aside>
     </div>
 
+    <section class="output" id="output" aria-label="Output">
+      <div class="output__head">
+        <span class="output__title">Output</span>
+        <div class="output__tabs" id="output-tabs" role="tablist" aria-label="Output format">
+          <button class="tab" type="button" role="tab" data-format="css" aria-selected="true">
+            CSS
+          </button>
+          <button class="tab" type="button" role="tab" data-format="vars" aria-selected="false">
+            Variables
+          </button>
+          <button class="tab" type="button" role="tab" data-format="json" aria-selected="false">
+            JSON
+          </button>
+        </div>
+        <button class="btn" id="output-copy" type="button">Copy</button>
+      </div>
+      <pre class="output__code" id="output-code"></pre>
+    </section>
+
     <script src="grid.js"></script>
     <script src="breakpoints.js"></script>
+    <script src="export.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

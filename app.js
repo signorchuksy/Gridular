@@ -12,6 +12,7 @@
 
   var BP = window.Breakpoints;
   var G = window.Gridular;
+  var EX = window.Export;
 
   var STAGE_HEIGHT = 480;
   var STORAGE_KEY = "gridular.state";
@@ -76,6 +77,7 @@
       breakpoint: BP.load(),
       guides: [first],
       selectedGuideId: first.id,
+      outputFormat: "css",
     };
   }
 
@@ -89,6 +91,7 @@
             breakpoint: BP.load(),
             guides: parsed.guides,
             selectedGuideId: parsed.selectedGuideId || null,
+            outputFormat: parsed.outputFormat || "css",
           };
         }
       }
@@ -112,6 +115,9 @@
     inspectorType: document.getElementById("inspector-type"),
     inspectorBody: document.getElementById("inspector-body"),
     inspectorClose: document.getElementById("inspector-close"),
+    outputTabs: document.getElementById("output-tabs"),
+    outputCode: document.getElementById("output-code"),
+    outputCopy: document.getElementById("output-copy"),
   };
 
   function selectedGuide() {
@@ -126,7 +132,11 @@
       window.localStorage &&
         window.localStorage.setItem(
           STORAGE_KEY,
-          JSON.stringify({ guides: state.guides, selectedGuideId: state.selectedGuideId })
+          JSON.stringify({
+            guides: state.guides,
+            selectedGuideId: state.selectedGuideId,
+            outputFormat: state.outputFormat,
+          })
         );
     } catch (e) {
       /* storage unavailable — non-fatal */
@@ -160,6 +170,7 @@
     renderGuideList();
     renderOverlay();
     renderInspector();
+    renderOutput();
   }
 
   function renderBreakpoint() {
@@ -393,8 +404,43 @@
     els.inspectorBody.appendChild(readout);
   }
 
-  // --- Guide operations ---
+  /**
+   * The columns guide the output is derived from: the selected one if it is a
+   * columns guide, otherwise the first columns guide in the set.
+   */
+  function outputGuide() {
+    var sel = selectedGuide();
+    if (sel && sel.type === "columns") return sel;
+    for (var i = 0; i < state.guides.length; i++) {
+      if (state.guides[i].type === "columns") return state.guides[i];
+    }
+    return null;
+  }
 
+  function renderOutput() {
+    var guide = outputGuide();
+    var format = state.outputFormat;
+
+    Array.prototype.forEach.call(els.outputTabs.children, function (tab) {
+      tab.setAttribute("aria-selected", tab.dataset.format === format ? "true" : "false");
+    });
+
+    if (!guide) {
+      els.outputCode.textContent = "Add a columns guide to generate output.";
+      return;
+    }
+
+    var span = state.breakpoint.width;
+    if (format === "vars") {
+      els.outputCode.textContent = EX.customProperties(guide, span);
+    } else if (format === "json") {
+      els.outputCode.textContent = EX.json(guide, span);
+    } else {
+      els.outputCode.textContent = EX.css(guide, span);
+    }
+  }
+
+  // --- Guide operations ---
   function addGuide(type) {
     var guide = makeGuide(type);
     state.guides.push(guide);
@@ -564,6 +610,47 @@
   els.inspectorClose.addEventListener("click", function () {
     setState({ selectedGuideId: null });
   });
+
+  els.outputTabs.addEventListener("click", function (e) {
+    var tab = e.target.closest(".tab");
+    if (!tab) return;
+    setState({ outputFormat: tab.dataset.format });
+  });
+
+  els.outputCopy.addEventListener("click", function () {
+    var text = els.outputCode.textContent;
+    var done = function () {
+      var original = els.outputCopy.textContent;
+      els.outputCopy.textContent = "Copied";
+      setTimeout(function () {
+        els.outputCopy.textContent = original;
+      }, 1200);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () {
+        fallbackCopy(text, done);
+      });
+    } else {
+      fallbackCopy(text, done);
+    }
+  });
+
+  /** Clipboard fallback for non-secure contexts (e.g. file://). */
+  function fallbackCopy(text, done) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand("copy");
+      done();
+    } catch (e) {
+      /* copy unavailable — leave the text selectable in the panel */
+    }
+    document.body.removeChild(ta);
+  }
 
   // --- Init ---
 
