@@ -47,4 +47,22 @@ workspace map updated. No application code written.
 
 ## Results
 
-(filled during execution)
+**Done 2026-09-13.**
+
+- `git init` on `main` (older git — used `git symbolic-ref HEAD refs/heads/main`).
+- `.gitignore` written; verified with `git check-ignore -v` that `.env.*` and
+  `node_modules/` are ignored.
+- `README.md`, `AGENTS.md`, `phases/` (8 phase plans) created.
+- Initial commit `1a99f9e` — "chore: scaffold Gridular repo with research, plan,
+  and phase plans".
+- Remote added: `https://github.com/signorchuksy/Gridular.git`; pushed `main`
+  (`git log origin/main -1` → `1a99f9e`).
+- Default branch set to `main` via `gh api` (verified: `main`).
+- Workspace map row added for `17-gridular`.
+
+**Note:** the remote still carries an unrelated `master` branch (the old
+plugin-template README, commit `b399072`). `main` was pushed non-destructively;
+`master` was left untouched pending the user's decision to delete it.
+
+**Exit criteria met:** repo versioned and pushed; phase plans exist; workspace map
+updated; no application code written.

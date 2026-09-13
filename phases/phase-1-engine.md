@@ -19,11 +19,17 @@ with assertions), the two open decisions below.
 
 ## Decisions to make and record here
 
-1. **Fractional width rounding.** When `(span − 2·margin − (n−1)·gutter) / n` is
-   not an integer, choose one rule (e.g. round to 2 decimals, or floor to whole
-   px) and assert it. Record the choice and the reason.
-2. **Offset origin.** Decide whether `offset` is measured from the frame edge or
-   from the guide's own start. Record the choice.
+1. **Fractional width rounding.** **Decided:** the engine keeps full precision
+   internally (tracks always sum to the span exactly); `round2()` is applied only
+   at display/export time. Reason: rounding inside the solver would make tracks
+   drift from the span and break the "total equals span" invariant. Asserted by
+   the `stretch last end = span - margin` check.
+2. **Offset origin.** **Confirmed from Figma's docs, not guessed:** offset is
+   measured **from the chosen frame edge**. Figma's own example — "a Row layout
+   guide set to Bottom with an offset of 16, the first row will begin 16px from
+   the bottom of the frame" — settles it. Asserted by the
+   `fixed bottom offset from bottom edge` check (span 800, size 100, offset 16 →
+   end 784).
 
 ## API
 
@@ -69,4 +75,17 @@ engine file contains no DOM references.
 
 ## Results
 
-(filled during execution)
+**Done 2026-09-13.**
+
+- `grid.js` written as a **plain script** (not an ES module) exposing
+  `window.Gridular`, so `index.html` works over `file://` with no server. This is
+  a deliberate no-build choice; the engine is still pure and DOM-free.
+- `tests/engine-check.html` written with 23 assertions.
+- **All 23 pass** (verified in the browser): 4 calculator-parity cases, stretch
+  structure, all fixed modes (left/right/top/bottom/center), offset from the
+  chosen edge, uniform grid, and edge cases (count 1, count 0 clamps to 1, size 0).
+- Both decisions recorded above (full-precision internally; offset from the frame
+  edge, confirmed from Figma's docs).
+
+**Exit criteria met:** all assertions pass; decisions recorded; `grid.js` contains
+no DOM references.

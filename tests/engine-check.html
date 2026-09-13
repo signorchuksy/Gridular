@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gridular — engine check</title>
+    <style>
+      body {
+        font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+        background: #111;
+        color: #eee;
+        padding: 24px;
+      }
+      h1 {
+        font-size: 16px;
+      }
+      .pass {
+        color: #4ade80;
+      }
+      .fail {
+        color: #f87171;
+      }
+      li {
+        margin: 2px 0;
+      }
+      #summary {
+        margin-top: 16px;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Gridular — engine check</h1>
+    <ul id="results"></ul>
+    <div id="summary"></div>
+
+    <script src="../grid.js"></script>
+    <script>
+      (function () {
+        "use strict";
+        var G = window.Gridular;
+        var results = document.getElementById("results");
+        var passed = 0;
+        var failed = 0;
+
+        function check(name, actual, expected) {
+          var ok =
+            typeof expected === "number"
+              ? Math.abs(actual - expected) < 1e-9
+              : JSON.stringify(actual) === JSON.stringify(expected);
+          var li = document.createElement("li");
+          li.className = ok ? "pass" : "fail";
+          li.textContent =
+            (ok ? "PASS " : "FAIL ") +
+            name +
+            (ok ? "" : " — expected " + JSON.stringify(expected) + ", got " + JSON.stringify(actual));
+          results.appendChild(li);
+          ok ? passed++ : failed++;
+        }
+
+        // --- Calculator parity (RESEARCH.md §1b) ---
+        // 960 / 4 / 20 / 20 -> 215
+        check(
+          "parity 960/4/20/20 size",
+          G.solveTracks({ span: 960, count: 4, gutter: 20, margin: 20, mode: "stretch" }).size,
+          215
+        );
+        // 960 / 12 / 20 / 10 -> 60
+        check(
+          "parity 960/12/20/10 size",
+          G.solveTracks({ span: 960, count: 12, gutter: 20, margin: 10, mode: "stretch" }).size,
+          60
+        );
+        // 950 / 24 / 10 / 0 -> 30
+        check(
+          "parity 950/24/10/0 size",
+          G.solveTracks({ span: 950, count: 24, gutter: 10, margin: 0, mode: "stretch" }).size,
+          30
+        );
+        // 320 / 4 / 10 / 15 -> 65
+        check(
+          "parity 320/4/10/15 size",
+          G.solveTracks({ span: 320, count: 4, gutter: 10, margin: 15, mode: "stretch" }).size,
+          65
+        );
+
+        // --- Stretch structure ---
+        var st = G.solveTracks({ span: 960, count: 4, gutter: 20, margin: 20, mode: "stretch" });
+        check("stretch track count", st.tracks.length, 4);
+        check("stretch first start = margin", st.tracks[0].start, 20);
+        check("stretch last end = span - margin", st.tracks[3].end, 940);
+        check(
+          "stretch gutters are 20",
+          G.round2(st.tracks[1].start - st.tracks[0].end),
+          20
+        );
+
+        // --- Fixed modes ---
+        var left = G.solveTracks({ span: 960, count: 4, mode: "left", size: 200, offset: 0 });
+        check("fixed left size", left.size, 200);
+        check("fixed left first start", left.tracks[0].start, 0);
+        check("fixed left second start", left.tracks[1].start, 200);
+
+        var leftOff = G.solveTracks({ span: 960, count: 2, mode: "left", size: 200, offset: 16 });
+        check("fixed left offset start", leftOff.tracks[0].start, 16);
+
+        var right = G.solveTracks({ span: 960, count: 2, mode: "right", size: 200, offset: 0 });
+        check("fixed right last end = span", right.tracks[1].end, 960);
+        check("fixed right first start", right.tracks[0].start, 560);
+
+        var bottom = G.solveTracks({ span: 800, count: 1, mode: "bottom", size: 100, offset: 16 });
+        check("fixed bottom offset from bottom edge", bottom.tracks[0].end, 784);
+
+        var center = G.solveTracks({ span: 960, count: 2, mode: "center", size: 200 });
+        check("center first start", center.tracks[0].start, 280);
+        check("center last end", center.tracks[1].end, 680);
+
+        // --- Uniform grid ---
+        var gg = G.gridGuides({ width: 100, height: 50, size: 8 });
+        check("grid vertical count", gg.vertical.length, 12);
+        check("grid horizontal count", gg.horizontal.length, 6);
+        check("grid first vertical", gg.vertical[0], 8);
+        check("grid zero size is empty", G.gridGuides({ width: 100, height: 50, size: 0 }).vertical, []);
+
+        // --- Edge cases ---
+        check(
+          "count 1 stretch fills span minus margins",
+          G.solveTracks({ span: 100, count: 1, gutter: 20, margin: 10, mode: "stretch" }).size,
+          80
+        );
+        check(
+          "count 0 clamps to 1",
+          G.solveTracks({ span: 100, count: 0, mode: "stretch" }).tracks.length,
+          1
+        );
+
+        document.getElementById("summary").textContent =
+          passed + " passed, " + failed + " failed";
+        document.getElementById("summary").className = failed ? "fail" : "pass";
+      })();
+    </script>
+  </body>
+</html>
