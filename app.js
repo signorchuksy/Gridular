@@ -282,6 +282,25 @@
     els.inspectorType.value = guide.type;
     els.inspectorBody.innerHTML = "";
 
+    // Colour + opacity apply to every guide type (Figma default: #FF0000 @ 10%).
+    els.inspectorBody.appendChild(
+      colorRow(guide.color, function (v) {
+        updateGuide({ color: v });
+      })
+    );
+    els.inspectorBody.appendChild(
+      numberRow(
+        "Opacity",
+        guide.opacity,
+        0,
+        function (v) {
+          updateGuide({ opacity: Math.min(100, v) });
+        },
+        false,
+        100
+      )
+    );
+
     if (guide.type === "grid") {
       els.inspectorBody.appendChild(
         numberRow("Size", guide.size, 1, function (v) {
@@ -392,7 +411,7 @@
 
   // --- Field builders ---
 
-  function numberRow(label, value, min, onChange, disabled) {
+  function numberRow(label, value, min, onChange, disabled, max) {
     var row = document.createElement("div");
     row.className = "row";
 
@@ -404,6 +423,7 @@
     input.className = "input input--num";
     input.type = "number";
     input.min = String(min);
+    if (typeof max === "number") input.max = String(max);
     input.step = "1";
     input.value = String(value);
     input.disabled = !!disabled;
@@ -411,11 +431,65 @@
     input.addEventListener("input", function () {
       var n = Number(input.value);
       if (!isFinite(n) || n < min) return;
+      // When a max is set, clamp rather than reject so the field never displays
+      // a value the state ignored.
+      if (typeof max === "number" && n > max) {
+        n = max;
+        input.value = String(max);
+      }
       onChange(Math.round(n));
     });
 
     row.appendChild(lab);
     row.appendChild(input);
+    return row;
+  }
+
+  function colorRow(value, onChange) {
+    var row = document.createElement("div");
+    row.className = "row";
+
+    var lab = document.createElement("span");
+    lab.className = "row__label";
+    lab.textContent = "Color";
+
+    var wrap = document.createElement("div");
+    wrap.className = "color-field";
+
+    var swatch = document.createElement("input");
+    swatch.type = "color";
+    swatch.className = "color-swatch";
+    swatch.value = value;
+    swatch.setAttribute("aria-label", "Color swatch");
+
+    var hex = document.createElement("input");
+    hex.type = "text";
+    hex.className = "input input--hex";
+    hex.value = value.toUpperCase();
+    hex.setAttribute("aria-label", "Color hex");
+    hex.spellcheck = false;
+
+    function commit(v) {
+      if (/^#[0-9a-fA-F]{6}$/.test(v)) onChange(v.toUpperCase());
+    }
+
+    swatch.addEventListener("input", function () {
+      hex.value = swatch.value.toUpperCase();
+      commit(swatch.value);
+    });
+    hex.addEventListener("input", function () {
+      var v = hex.value.trim();
+      if (v.charAt(0) !== "#") v = "#" + v;
+      if (/^#[0-9a-fA-F]{6}$/.test(v)) {
+        swatch.value = v;
+        commit(v);
+      }
+    });
+
+    wrap.appendChild(swatch);
+    wrap.appendChild(hex);
+    row.appendChild(lab);
+    row.appendChild(wrap);
     return row;
   }
 

@@ -334,6 +334,41 @@ body {
   cursor: not-allowed;
 }
 
+.color-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 110px;
+}
+
+.color-swatch {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+}
+
+.color-swatch::-webkit-color-swatch-wrapper {
+  padding: 2px;
+}
+
+.color-swatch::-webkit-color-swatch {
+  border: none;
+  border-radius: 4px;
+}
+
+.input--hex {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+  font-family: var(--mono);
+  text-transform: uppercase;
+}
+
 select.input {
   width: 110px;
   cursor: pointer;

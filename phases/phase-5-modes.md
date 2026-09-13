@@ -54,4 +54,30 @@ the fields valid for the active mode.
 
 ## Results
 
-(filled during execution)
+**Done 2026-09-13.**
+
+- `app.js`: added `colorRow` (native colour swatch + hex text field, kept in
+  sync) and an `Opacity` field; `numberRow` gained an optional `max`.
+- `styles.css`: colour field, swatch, and hex input styling.
+- Colour and opacity apply to **every** guide type (grid, columns, rows), placed
+  above the type-specific fields.
+
+**Bug found and fixed during verification:** an out-of-range opacity (150) was
+rejected by the state but still displayed in the field, so the UI and state
+disagreed. Changed `numberRow` to **clamp** to `max` (and write the clamped value
+back to the field) instead of silently ignoring it.
+
+**Checks run in the browser (all pass):**
+
+- Default colour `rgba(255, 0, 0, 0.1)` (Figma's default).
+- Hex `#00FF00` → overlay updates; swatch stays in sync.
+- Opacity 50 → `rgba(0, 255, 0, 0.5)`; opacity 150 clamps to 100.
+- Invalid hex (`zzz`) is ignored — the overlay keeps the last valid colour.
+- Column modes: `stretch, left, center, right`; row modes:
+  `stretch, top, center, bottom`.
+- Field availability: Center disables Offset; Left enables Offset and disables
+  Margin; Stretch enables Margin and disables Width.
+- Colour is per-guide (the rows guide kept its own default red).
+
+**Exit criteria met:** colour and opacity work; every mode renders correctly; the
+inspector shows only the fields valid for the active mode.
