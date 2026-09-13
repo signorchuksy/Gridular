@@ -45,9 +45,14 @@
     var span = Number(opts.span) || 0;
     var count = Math.max(1, Math.floor(Number(opts.count) || 1));
     var mode = opts.mode || "stretch";
-    var gutter = Number(opts.gutter) || 0;
-    var margin = Number(opts.margin) || 0;
     var offset = Number(opts.offset) || 0;
+
+    // Margin and Gutter are Stretch-only (Figma docs, RESEARCH.md §1a-ii).
+    // Ignore them in fixed and center modes so a stale value cannot leak into
+    // the geometry.
+    var isStretch = mode === "stretch";
+    var gutter = isStretch ? Number(opts.gutter) || 0 : 0;
+    var margin = isStretch ? Number(opts.margin) || 0 : 0;
 
     var tracks = [];
     var size;

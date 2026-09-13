@@ -116,12 +116,18 @@ body {
 
 /* --- Stage --- */
 
+.workspace {
+  flex: 1 1 auto;
+  display: flex;
+  min-height: 0;
+}
+
 .stage-wrap {
   flex: 1 1 auto;
   overflow: auto;
   padding: 32px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: flex-start;
 }
 
@@ -132,6 +138,10 @@ body {
   border-radius: var(--radius);
   min-height: 480px;
   flex: 0 0 auto;
+  /* `margin: auto` centres the stage when it fits, but unlike
+     `justify-content: center` it does not clip the left edge when the stage is
+     wider than the viewport. */
+  margin: 0 auto;
 }
 
 .stage__label {
@@ -141,4 +151,109 @@ body {
   color: var(--text-dim);
   font-family: var(--mono);
   font-size: 11px;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Guide bands */
+.band {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+/* --- Inspector --- */
+
+.inspector {
+  flex: 0 0 260px;
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.inspector[hidden] {
+  display: none;
+}
+
+.inspector__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.inspector__type {
+  font-weight: 600;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.icon-btn:hover {
+  color: var(--text);
+  background: var(--panel-2);
+}
+
+.inspector__body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.row__label {
+  color: var(--text-dim);
+}
+
+.row .input {
+  width: 110px;
+}
+
+.row .input:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+select.input {
+  width: 110px;
+  cursor: pointer;
+}
+
+.readout {
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.readout b {
+  color: var(--text);
+  font-weight: 600;
 }

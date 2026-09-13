@@ -115,6 +115,29 @@
         check("center first start", center.tracks[0].start, 280);
         check("center last end", center.tracks[1].end, 680);
 
+        // --- Margin/Gutter are Stretch-only (Figma docs) ---
+        // A stale gutter/margin must NOT leak into fixed or center geometry.
+        var fixedNoGutter = G.solveTracks({
+          span: 900,
+          count: 5,
+          mode: "left",
+          size: 200,
+          gutter: 20,
+          margin: 20,
+        });
+        check("fixed ignores gutter", fixedNoGutter.tracks[4].start, 800);
+        check("fixed ignores margin", fixedNoGutter.tracks[0].start, 0);
+
+        var centerNoGutter = G.solveTracks({
+          span: 900,
+          count: 3,
+          mode: "center",
+          size: 200,
+          gutter: 20,
+        });
+        check("center ignores gutter", centerNoGutter.tracks[0].start, 150);
+        check("center ignores gutter (last end)", centerNoGutter.tracks[2].end, 750);
+
         // --- Uniform grid ---
         var gg = G.gridGuides({ width: 100, height: 50, size: 8 });
         check("grid vertical count", gg.vertical.length, 12);

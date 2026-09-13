@@ -38,4 +38,29 @@ updates the overlay live.
 
 ## Results
 
-(filled during execution)
+**Done 2026-09-13.**
+
+- `index.html` restructured: workspace split into the stage (with an `.overlay`
+  layer) and the inspector card (type label top-left, × top-right, divider).
+- `styles.css`: workspace layout, guide bands, inspector, readout.
+- `app.js`: guide state, `setState`/`updateGuide`, overlay rendering, inspector
+  field builders (number + select), hex→rgba helper, and the calculator readout.
+
+**Bug found and fixed during verification:** the engine was applying `gutter` in
+fixed and center modes, but Figma's docs say **Gutter and Margin are
+Stretch-only**. Fixed in `grid.js` (both are now ignored outside stretch mode) and
+covered by 4 new assertions in `tests/engine-check.html` — now **27/27 pass**.
+
+**Checks run in the browser (all pass):**
+
+- Stretch `900 / 4 / 20 / 20` → 4 bands, first at 20px/200px, last at 680px.
+- Count 4 → 5 → 5 bands, column width 156px, live with no reload.
+- Left mode → Width/Offset enabled, Margin/Gutter disabled; 5×200 from the left
+  edge, last at 800px (no gutter applied).
+- Center mode → Offset disabled; 5×200 in a 900 span starts at −50px (centred).
+- Right mode → last band ends at 900px.
+- Back to Stretch → Margin/Gutter re-enabled, Width disabled.
+- Stage is scrollable (not clipped) when wider than the viewport.
+
+**Exit criteria met:** one columns guide renders correctly in both mode families;
+every input updates the overlay live.
