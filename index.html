@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gridular</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <h1 class="brand">Gridular</h1>
+      <div class="breakpoint">
+        <label class="field">
+          <span class="field__label">Breakpoint</span>
+          <input
+            id="bp-width"
+            class="input input--num"
+            type="number"
+            min="1"
+            step="1"
+            inputmode="numeric"
+            aria-label="Breakpoint width in pixels"
+          />
+          <span class="field__unit">px</span>
+        </label>
+        <div class="presets" id="presets" role="group" aria-label="Tailwind breakpoint presets"></div>
+      </div>
+    </header>
+
+    <main class="stage-wrap">
+      <div class="stage" id="stage">
+        <div class="stage__label" id="stage-label"></div>
+      </div>
+    </main>
+
+    <script src="grid.js"></script>
+    <script src="breakpoints.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

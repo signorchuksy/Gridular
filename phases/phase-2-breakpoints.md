@@ -51,4 +51,21 @@ invalid input is handled.
 
 ## Results
 
-(filled during execution)
+**Done 2026-09-13.**
+
+- `breakpoints.js` — presets, `parseWidth` validation, `load`/`save` to
+  `localStorage` (key `gridular.breakpoint`), default `lg / 1024`.
+- `index.html` + `styles.css` + `app.js` — the app shell: top bar with the width
+  input and preset buttons, and the preview stage.
+- All state mutation funnels through one `setState`.
+
+**Checks run in the browser (all pass):**
+
+- `xl` preset → stage 1280px, label `1280px · xl`, button pressed.
+- Custom `900` → stage 900px, label `900px · custom`, no preset pressed.
+- Empty input → canvas unchanged (invalid input rejected).
+- `localStorage` holds `{name:"custom",width:900,source:"custom"}`.
+- Reload → width 900px, label `900px · custom`, input `900` restored.
+
+**Exit criteria met:** width entry works, presets fill it, custom entry persists
+across reload, invalid input handled.

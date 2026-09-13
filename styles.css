@@ -1,0 +1,144 @@
+:root {
+  --bg: #0d0d0f;
+  --panel: #17171a;
+  --panel-2: #1f1f23;
+  --border: #2a2a30;
+  --text: #ededf0;
+  --text-dim: #8b8b95;
+  --accent: #4f7cff;
+  --radius: 8px;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Top bar --- */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 12px 16px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  flex: 0 0 auto;
+}
+
+.brand {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.breakpoint {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.field__label {
+  color: var(--text-dim);
+}
+
+.field__unit {
+  color: var(--text-dim);
+}
+
+.input {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 5px 8px;
+  font: inherit;
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--accent);
+}
+
+.input--num {
+  width: 84px;
+  font-family: var(--mono);
+}
+
+.presets {
+  display: flex;
+  gap: 4px;
+}
+
+.preset {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.preset:hover {
+  color: var(--text);
+  border-color: #3a3a42;
+}
+
+.preset[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* --- Stage --- */
+
+.stage-wrap {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.stage {
+  position: relative;
+  background: #101013;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  min-height: 480px;
+  flex: 0 0 auto;
+}
+
+.stage__label {
+  position: absolute;
+  top: -22px;
+  left: 0;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 11px;
+}
