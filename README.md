@@ -15,30 +15,49 @@ out.
 
 ## Status
 
-Phased build. See `PLAN.md` for the full plan and `phases/` for the per-phase
-plans.
+**Web app complete** (phases 0–7, 2026-09-13). See `PLAN.md` for the full plan,
+`phases/` for the per-phase plans, and `BUILD_NOTES.md` for what was built.
 
 | Phase | Name | Status |
 | ----- | ---- | ------ |
-| 0 | Repo setup + scaffolding | in progress |
-| 1 | Geometry engine + calculator parity | not started |
-| 2 | Breakpoint entry | not started |
-| 3 | Single guide, live preview | not started |
-| 4 | Three guide types + stacking | not started |
-| 5 | Colour + modes | not started |
-| 6 | Output (CSS / tokens) | not started |
-| 7 | Polish + docs | not started |
+| 0 | Repo setup + scaffolding | done |
+| 1 | Geometry engine + calculator parity | done |
+| 2 | Breakpoint entry | done |
+| 3 | Single guide, live preview | done |
+| 4 | Three guide types + stacking | done |
+| 5 | Colour + modes | done |
+| 6 | Output (CSS / tokens) | done |
+| 7 | Polish + docs | done |
 
-**Deferred:** the Figma plugin. It becomes its own project once the web app is
-complete; `grid.js` stays pure so it can be reused then.
+**Deferred:** the Figma plugin. It becomes its own project; `grid.js` stays pure
+so it can be reused then.
 
 ## Stack
 
 No-build: plain HTML, CSS, and vanilla JavaScript. No frameworks, no tooling.
-Open `index.html` in a browser.
+
+## Run it
+
+Open `index.html` in a browser. That's it — no server, no build step.
+
+To run the engine checks, open `tests/engine-check.html`; it prints a pass/fail
+summary (27 assertions).
+
+## Files
+
+| File | Role |
+| ---- | ---- |
+| `index.html` | Structure: top bar, guide list, stage, inspector, output |
+| `styles.css` | Dark UI; all colours/spacing via custom properties |
+| `app.js` | UI wiring, state, render loop |
+| `grid.js` | **Pure** geometry engine (no DOM) — reusable by the future plugin |
+| `breakpoints.js` | Tailwind presets + custom breakpoint entry |
+| `export.js` | **Pure** CSS / custom-property / JSON emitters |
+| `tests/engine-check.html` | Self-check page with 27 assertions |
 
 ## Docs
 
 - `RESEARCH.md` — evidence-grounded analysis of both references.
 - `PLAN.md` — product frame, architecture, phased build, decision record.
 - `phases/` — one plan per phase, written before the code.
+- `BUILD_NOTES.md` — what was built, bugs found, what was deferred.

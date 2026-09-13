@@ -144,14 +144,17 @@ No phase starts before the previous one's exit criteria are met.
 
 | Phase | Name | Plan file | Status |
 | ----- | ---- | --------- | ------ |
-| 0 | Repo setup + scaffolding | `phases/phase-0-repo-setup.md` | in progress |
-| 1 | Geometry engine + calculator parity | `phases/phase-1-engine.md` | not started |
-| 2 | Breakpoint entry (happy path) | `phases/phase-2-breakpoints.md` | not started |
-| 3 | Single guide, live preview | `phases/phase-3-live-preview.md` | not started |
-| 4 | Three guide types + stacking | `phases/phase-4-guides.md` | not started |
-| 5 | Colour + modes | `phases/phase-5-modes.md` | not started |
-| 6 | Output (CSS / tokens) | `phases/phase-6-output.md` | not started |
-| 7 | Polish + docs | `phases/phase-7-polish.md` | not started |
+| 0 | Repo setup + scaffolding | `phases/phase-0-repo-setup.md` | done |
+| 1 | Geometry engine + calculator parity | `phases/phase-1-engine.md` | done |
+| 2 | Breakpoint entry (happy path) | `phases/phase-2-breakpoints.md` | done |
+| 3 | Single guide, live preview | `phases/phase-3-live-preview.md` | done |
+| 4 | Three guide types + stacking | `phases/phase-4-guides.md` | done |
+| 5 | Colour + modes | `phases/phase-5-modes.md` | done |
+| 6 | Output (CSS / tokens) | `phases/phase-6-output.md` | done |
+| 7 | Polish + docs | `phases/phase-7-polish.md` | done |
+
+**Web app complete 2026-09-13.** See `BUILD_NOTES.md` for what was built, the
+bugs found during verification, and what was deferred.
 
 **Deferred (not in this build):** Figma plugin. It becomes its own project once
 the web app is complete; `grid.js` stays pure so it can be reused then.

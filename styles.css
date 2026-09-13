@@ -460,3 +460,57 @@ select.input {
   color: var(--text);
   white-space: pre;
 }
+
+/* --- Responsive --- */
+
+@media (max-width: 900px) {
+  .topbar {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .workspace {
+    flex-direction: column;
+  }
+
+  .guides {
+    flex: 0 0 auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    max-height: 180px;
+  }
+
+  .inspector {
+    flex: 0 0 auto;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    max-height: 320px;
+  }
+
+  .stage-wrap {
+    padding: 24px 16px;
+  }
+
+  .output {
+    max-height: 200px;
+  }
+}
+
+@media (max-width: 560px) {
+  .breakpoint {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .presets {
+    flex-wrap: wrap;
+  }
+
+  .output__head {
+    flex-wrap: wrap;
+  }
+
+  .output__tabs {
+    margin-left: 0;
+  }
+}

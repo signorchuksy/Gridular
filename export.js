@@ -24,7 +24,9 @@
       columns: guide.count,
       gutter: guide.mode === "stretch" ? guide.gutter : 0,
       margin: guide.mode === "stretch" ? guide.margin : 0,
-      columnWidth: G.round2(solved.size),
+      // Clamp at 0: a span too small for the margins/gutters yields a negative
+      // derived width, which is meaningless to emit.
+      columnWidth: Math.max(0, G.round2(solved.size)),
       pageWidth: span,
       mode: guide.mode,
     };

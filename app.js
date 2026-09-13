@@ -291,6 +291,11 @@
     }
     els.inspector.hidden = false;
     els.inspectorType.value = guide.type;
+
+    // Rebuilding the inspector replaces its inputs, which would drop focus and
+    // break typing multi-digit values and arrow-key nudging. Capture the focused
+    // field (and caret) and restore it after the rebuild.
+    var focus = captureFocus();
     els.inspectorBody.innerHTML = "";
 
     // Colour + opacity apply to every guide type (Figma default: #FF0000 @ 10%).
@@ -396,12 +401,46 @@
       "<div>" +
       (isColumns ? "Column width" : "Row height") +
       ": <b>" +
-      G.round2(solved.size) +
+      Math.max(0, G.round2(solved.size)) +
       "px</b></div>" +
       "<div>Page width: <b>" +
       state.breakpoint.width +
       "px</b></div>";
     els.inspectorBody.appendChild(readout);
+
+    restoreFocus(focus);
+  }
+
+  /**
+   * Remember which inspector field has focus, and where the caret is, so it can
+   * be restored after the inspector is rebuilt.
+   */
+  function captureFocus() {
+    var el = document.activeElement;
+    if (!el || !els.inspectorBody.contains(el)) return null;
+    var label = el.getAttribute("aria-label");
+    if (!label) return null;
+    var caret = null;
+    try {
+      caret = el.selectionStart;
+    } catch (e) {
+      /* inputs that do not support selection */
+    }
+    return { label: label, caret: caret };
+  }
+
+  function restoreFocus(focus) {
+    if (!focus) return;
+    var el = els.inspectorBody.querySelector('[aria-label="' + focus.label + '"]');
+    if (!el) return;
+    el.focus();
+    if (focus.caret !== null && el.setSelectionRange) {
+      try {
+        el.setSelectionRange(focus.caret, focus.caret);
+      } catch (e) {
+        /* not a text-selectable input */
+      }
+    }
   }
 
   /**
@@ -484,6 +523,20 @@
         input.value = String(max);
       }
       onChange(Math.round(n));
+    });
+
+    // Arrow keys nudge by 1 (or 10 with Shift). Native number inputs already do
+    // this, but only while focused and only for the spinner; this makes the
+    // behaviour explicit and consistent across browsers.
+    input.addEventListener("keydown", function (e) {
+      if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+      e.preventDefault();
+      var step = e.shiftKey ? 10 : 1;
+      var next = (Number(input.value) || 0) + (e.key === "ArrowUp" ? step : -step);
+      if (next < min) next = min;
+      if (typeof max === "number" && next > max) next = max;
+      input.value = String(next);
+      onChange(next);
     });
 
     row.appendChild(lab);
