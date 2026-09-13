@@ -28,6 +28,16 @@
     </header>
 
     <div class="workspace">
+      <aside class="guides" aria-label="Layout guides">
+        <div class="guides__head">
+          <span class="guides__title">Layout guide</span>
+          <button class="icon-btn" id="guide-add" type="button" aria-label="Add layout guide">
+            +
+          </button>
+        </div>
+        <ul class="guides__list" id="guide-list"></ul>
+      </aside>
+
       <main class="stage-wrap">
         <div class="stage" id="stage">
           <div class="stage__label" id="stage-label"></div>
@@ -37,7 +47,11 @@
 
       <aside class="inspector" id="inspector" aria-label="Guide settings">
         <div class="inspector__head">
-          <span class="inspector__type" id="inspector-type">Columns</span>
+          <select class="inspector__type" id="inspector-type" aria-label="Guide type">
+            <option value="grid">Grid</option>
+            <option value="columns">Columns</option>
+            <option value="rows">Rows</option>
+          </select>
           <button class="icon-btn" id="inspector-close" type="button" aria-label="Close settings">
             &times;
           </button>

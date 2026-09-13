@@ -1,7 +1,8 @@
 /**
  * app.js — Gridular UI wiring.
  *
- * Phase 3: one columns guide with a live preview and an inspector.
+ * Phase 4: three guide types (grid, columns, rows) with a guide list — add,
+ * select, toggle visibility, remove — and persistence of the whole set.
  *
  * All state mutation funnels through `setState` so there is one place to reason
  * about re-renders.
@@ -13,30 +14,91 @@
   var G = window.Gridular;
 
   var STAGE_HEIGHT = 480;
+  var STORAGE_KEY = "gridular.state";
 
-  /** @type {{breakpoint:object, guides:object[], selectedGuideId:string|null}} */
-  var state = {
-    breakpoint: BP.load(),
-    guides: [makeColumnsGuide()],
-    selectedGuideId: null,
-  };
-  state.selectedGuideId = state.guides[0].id;
+  // --- Guide factories ---
 
-  function makeColumnsGuide() {
-    return {
-      id: "g" + Math.random().toString(36).slice(2, 8),
-      type: "columns",
+  function uid() {
+    return "g" + Math.random().toString(36).slice(2, 8);
+  }
+
+  function makeGuide(type) {
+    var base = {
+      id: uid(),
+      type: type,
       visible: true,
       color: "#FF0000",
       opacity: 10,
-      count: 4,
+    };
+    return Object.assign(base, typeDefaults(type));
+  }
+
+  /**
+   * The type-specific fields for a guide type. Used both when creating a guide
+   * and when switching an existing guide's type, so a guide always has the
+   * fields its type needs.
+   */
+  function typeDefaults(type) {
+    if (type === "grid") {
+      return { size: 8 };
+    }
+    if (type === "columns") {
+      return {
+        count: 4,
+        mode: "stretch",
+        width: 200,
+        offset: 0,
+        margin: 20,
+        gutter: 20,
+      };
+    }
+    return {
+      count: 5,
       mode: "stretch",
-      width: 200,
+      height: 80,
       offset: 0,
-      margin: 20,
+      margin: 0,
       gutter: 20,
     };
   }
+
+  function guideLabel(guide) {
+    if (guide.type === "grid") return "Grid " + guide.size + "px";
+    if (guide.type === "columns") return guide.count + " columns";
+    return guide.count + " rows";
+  }
+
+  // --- State ---
+
+  function defaultState() {
+    var first = makeGuide("columns");
+    return {
+      breakpoint: BP.load(),
+      guides: [first],
+      selectedGuideId: first.id,
+    };
+  }
+
+  function loadState() {
+    try {
+      var raw = window.localStorage && window.localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.guides) && parsed.guides.length) {
+          return {
+            breakpoint: BP.load(),
+            guides: parsed.guides,
+            selectedGuideId: parsed.selectedGuideId || null,
+          };
+        }
+      }
+    } catch (e) {
+      /* corrupt storage — fall through to default */
+    }
+    return defaultState();
+  }
+
+  var state = loadState();
 
   var els = {
     width: document.getElementById("bp-width"),
@@ -44,6 +106,8 @@
     stage: document.getElementById("stage"),
     stageLabel: document.getElementById("stage-label"),
     overlay: document.getElementById("overlay"),
+    guideList: document.getElementById("guide-list"),
+    guideAdd: document.getElementById("guide-add"),
     inspector: document.getElementById("inspector"),
     inspectorType: document.getElementById("inspector-type"),
     inspectorBody: document.getElementById("inspector-body"),
@@ -57,13 +121,26 @@
     return null;
   }
 
+  function persist() {
+    try {
+      window.localStorage &&
+        window.localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({ guides: state.guides, selectedGuideId: state.selectedGuideId })
+        );
+    } catch (e) {
+      /* storage unavailable — non-fatal */
+    }
+    BP.save(state.breakpoint);
+  }
+
   /**
    * The single mutation point. Applies the change, persists, and re-renders.
    * @param {object} patch
    */
   function setState(patch) {
     Object.assign(state, patch);
-    BP.save(state.breakpoint);
+    persist();
     render();
   }
 
@@ -72,6 +149,7 @@
     var guide = selectedGuide();
     if (!guide) return;
     Object.assign(guide, patch);
+    persist();
     render();
   }
 
@@ -79,6 +157,7 @@
 
   function render() {
     renderBreakpoint();
+    renderGuideList();
     renderOverlay();
     renderInspector();
   }
@@ -97,26 +176,100 @@
     els.stageLabel.textContent = bp.width + "px · " + bp.name;
   }
 
+  function renderGuideList() {
+    els.guideList.innerHTML = "";
+
+    state.guides.forEach(function (guide) {
+      var li = document.createElement("li");
+      li.className = "guide";
+      if (guide.id === state.selectedGuideId) li.classList.add("guide--selected");
+
+      var select = document.createElement("button");
+      select.type = "button";
+      select.className = "guide__name";
+      select.textContent = guideLabel(guide);
+      select.addEventListener("click", function () {
+        setState({ selectedGuideId: guide.id });
+      });
+
+      var eye = document.createElement("button");
+      eye.type = "button";
+      eye.className = "icon-btn icon-btn--sm";
+      eye.textContent = guide.visible ? "\u25C9" : "\u25CB";
+      eye.setAttribute("aria-label", (guide.visible ? "Hide " : "Show ") + guideLabel(guide));
+      eye.setAttribute("aria-pressed", guide.visible ? "true" : "false");
+      eye.addEventListener("click", function () {
+        guide.visible = !guide.visible;
+        persist();
+        render();
+      });
+
+      var remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "icon-btn icon-btn--sm";
+      remove.textContent = "\u2212";
+      remove.setAttribute("aria-label", "Remove " + guideLabel(guide));
+      remove.addEventListener("click", function () {
+        removeGuide(guide.id);
+      });
+
+      li.appendChild(select);
+      li.appendChild(eye);
+      li.appendChild(remove);
+      els.guideList.appendChild(li);
+    });
+  }
+
   function renderOverlay() {
     els.overlay.innerHTML = "";
-    var span = state.breakpoint.width;
+    var width = state.breakpoint.width;
+    var height = STAGE_HEIGHT;
 
     state.guides.forEach(function (guide) {
       if (!guide.visible) return;
-      if (guide.type !== "columns") return;
-
-      var solved = G.solveColumns(guide, span);
       var color = hexToRgba(guide.color, guide.opacity);
 
-      solved.tracks.forEach(function (track) {
-        var band = document.createElement("div");
-        band.className = "band";
-        band.style.left = track.start + "px";
-        band.style.width = Math.max(0, track.end - track.start) + "px";
-        band.style.background = color;
-        els.overlay.appendChild(band);
-      });
+      if (guide.type === "grid") {
+        var lines = G.gridGuides({ width: width, height: height, size: guide.size });
+        lines.vertical.forEach(function (x) {
+          els.overlay.appendChild(line("v", x, color));
+        });
+        lines.horizontal.forEach(function (y) {
+          els.overlay.appendChild(line("h", y, color));
+        });
+      } else if (guide.type === "columns") {
+        G.solveColumns(guide, width).tracks.forEach(function (t) {
+          els.overlay.appendChild(band("v", t.start, t.end - t.start, color));
+        });
+      } else {
+        G.solveRows(guide, height).tracks.forEach(function (t) {
+          els.overlay.appendChild(band("h", t.start, t.end - t.start, color));
+        });
+      }
     });
+  }
+
+  function band(axis, start, size, color) {
+    var el = document.createElement("div");
+    el.className = "band band--" + axis;
+    if (axis === "v") {
+      el.style.left = start + "px";
+      el.style.width = Math.max(0, size) + "px";
+    } else {
+      el.style.top = start + "px";
+      el.style.height = Math.max(0, size) + "px";
+    }
+    el.style.background = color;
+    return el;
+  }
+
+  function line(axis, pos, color) {
+    var el = document.createElement("div");
+    el.className = "line line--" + axis;
+    if (axis === "v") el.style.left = pos + "px";
+    else el.style.top = pos + "px";
+    el.style.background = color;
+    return el;
   }
 
   function renderInspector() {
@@ -126,10 +279,23 @@
       return;
     }
     els.inspector.hidden = false;
-    els.inspectorType.textContent = "Columns";
-
-    var isStretch = guide.mode === "stretch";
+    els.inspectorType.value = guide.type;
     els.inspectorBody.innerHTML = "";
+
+    if (guide.type === "grid") {
+      els.inspectorBody.appendChild(
+        numberRow("Size", guide.size, 1, function (v) {
+          updateGuide({ size: v });
+        })
+      );
+      return;
+    }
+
+    var isColumns = guide.type === "columns";
+    var isStretch = guide.mode === "stretch";
+    var modes = isColumns
+      ? ["stretch", "left", "center", "right"]
+      : ["stretch", "top", "center", "bottom"];
 
     els.inspectorBody.appendChild(
       numberRow("Count", guide.count, 1, function (v) {
@@ -138,18 +304,18 @@
     );
 
     els.inspectorBody.appendChild(
-      selectRow("Mode", guide.mode, ["stretch", "left", "center", "right"], function (v) {
+      selectRow("Mode", guide.mode, modes, function (v) {
         updateGuide({ mode: v });
       })
     );
 
     els.inspectorBody.appendChild(
       numberRow(
-        "Width",
-        guide.width,
+        isColumns ? "Width" : "Height",
+        isColumns ? guide.width : guide.height,
         1,
         function (v) {
-          updateGuide({ width: v });
+          updateGuide(isColumns ? { width: v } : { height: v });
         },
         isStretch
       )
@@ -192,17 +358,36 @@
     );
 
     // Numeric readout — the calculator panel.
-    var solved = G.solveColumns(guide, state.breakpoint.width);
+    var span = isColumns ? state.breakpoint.width : STAGE_HEIGHT;
+    var solved = isColumns ? G.solveColumns(guide, span) : G.solveRows(guide, span);
     var readout = document.createElement("div");
     readout.className = "readout";
     readout.innerHTML =
-      "<div>Column width: <b>" +
+      "<div>" +
+      (isColumns ? "Column width" : "Row height") +
+      ": <b>" +
       G.round2(solved.size) +
       "px</b></div>" +
       "<div>Page width: <b>" +
       state.breakpoint.width +
       "px</b></div>";
     els.inspectorBody.appendChild(readout);
+  }
+
+  // --- Guide operations ---
+
+  function addGuide(type) {
+    var guide = makeGuide(type);
+    state.guides.push(guide);
+    setState({ selectedGuideId: guide.id });
+  }
+
+  function removeGuide(id) {
+    state.guides = state.guides.filter(function (g) {
+      return g.id !== id;
+    });
+    var nextSelected = state.selectedGuideId === id ? null : state.selectedGuideId;
+    setState({ selectedGuideId: nextSelected });
   }
 
   // --- Field builders ---
@@ -289,6 +474,17 @@
     if (BP.parseWidth(els.width.value) === null) {
       els.width.value = String(state.breakpoint.width);
     }
+  });
+
+  els.guideAdd.addEventListener("click", function () {
+    addGuide("columns");
+  });
+
+  els.inspectorType.addEventListener("change", function () {
+    var type = els.inspectorType.value;
+    // Merge in the new type's defaults so the guide always has the fields its
+    // type needs (e.g. `size` for a grid, `height` for rows).
+    updateGuide(Object.assign({ type: type }, typeDefaults(type)));
   });
 
   els.inspectorClose.addEventListener("click", function () {

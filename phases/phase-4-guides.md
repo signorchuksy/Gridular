@@ -42,4 +42,31 @@ set persists across reload.
 
 ## Results
 
-(filled during execution)
+**Done 2026-09-13.**
+
+- `index.html`: added the guide-list panel (header + `+`, list) and made the
+  inspector's type control a `<select>` (Grid / Columns / Rows).
+- `styles.css`: guide list, selected state, eye/remove buttons, row bands
+  (`.band--h`), grid lines (`.line--v` / `.line--h`).
+- `app.js`: guide factories + `typeDefaults`, `guideLabel`, whole-set persistence
+  (`gridular.state`), guide list rendering, multi-guide overlay rendering, and
+  add/select/toggle/remove operations.
+
+**Bug found and fixed during verification:** switching a guide's type via the
+inspector changed `type` but did not add the new type's fields, so a guide
+switched to `grid` had no `size` (rendered as "Grid undefinedpx" and drew no
+lines). Fixed by extracting `typeDefaults(type)` and merging it on type change —
+the same function now backs both creation and switching.
+
+**Checks run in the browser (all pass):**
+
+- Initial state: one `4 columns` guide.
+- Add + switch to grid → `4 columns, Grid 8px`; grid lines render.
+- Add + switch to rows → three guides; 9 bands (4 columns + 5 rows).
+- Toggling the grid's eye → 0 lines, 9 bands unchanged (only that guide hides).
+- Removing the rows guide → `4 columns, Grid 8px`; 4 bands.
+- Reload → guides, order, and visibility all restored.
+- Selecting the grid guide → type select shows `grid`, Size field present.
+
+**Exit criteria met:** three guide types coexist, each toggles and removes
+independently, and the full set persists across reload.

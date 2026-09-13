@@ -162,8 +162,98 @@ body {
 /* Guide bands */
 .band {
   position: absolute;
+}
+
+.band--v {
   top: 0;
   bottom: 0;
+}
+
+.band--h {
+  left: 0;
+  right: 0;
+}
+
+/* Uniform grid lines */
+.line {
+  position: absolute;
+}
+
+.line--v {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+
+.line--h {
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+
+/* --- Guide list --- */
+
+.guides {
+  flex: 0 0 220px;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.guides__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.guides__title {
+  font-weight: 600;
+}
+
+.guides__list {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.guide {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  border-radius: 6px;
+}
+
+.guide:hover {
+  background: var(--panel-2);
+}
+
+.guide--selected {
+  background: var(--panel-2);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.guide__name {
+  flex: 1 1 auto;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--text);
+  font: inherit;
+  padding: 7px 8px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.icon-btn--sm {
+  font-size: 13px;
+  padding: 4px 6px;
 }
 
 /* --- Inspector --- */
@@ -191,6 +281,14 @@ body {
 
 .inspector__type {
   font-weight: 600;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 5px 8px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .icon-btn {
