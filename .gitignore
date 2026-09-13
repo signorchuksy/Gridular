@@ -1,0 +1,21 @@
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+
+# Secrets — never commit
+.env
+.env.*
+*.pem
+*.key
+
+# Dependencies (no-build project, but guard anyway)
+node_modules/
+
+# Logs
+*.log
