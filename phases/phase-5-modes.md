@@ -17,19 +17,19 @@ availability.
 
 ## Mode sets (confirmed from Figma docs — `RESEARCH.md §1a-ii`)
 
-| Guide type | Modes |
-| ---------- | ----- |
-| Columns | `Left`, `Center`, `Right`, `Stretch` |
-| Rows | `Top`, `Center`, `Bottom`, `Stretch` |
+| Guide type | Modes                                |
+| ---------- | ------------------------------------ |
+| Columns    | `Left`, `Center`, `Right`, `Stretch` |
+| Rows       | `Top`, `Center`, `Bottom`, `Stretch` |
 
 ## Field availability
 
-| Field | Stretch | Left / Right / Top / Bottom | Center |
-| ----- | ------- | --------------------------- | ------ |
-| Size (Width/Height) | disabled (`Auto`) | enabled | enabled |
-| Offset | hidden | enabled | hidden |
-| Margin | enabled | hidden | hidden |
-| Gutter | enabled | hidden | hidden |
+| Field               | Stretch           | Left / Right / Top / Bottom | Center  |
+| ------------------- | ----------------- | --------------------------- | ------- |
+| Size (Width/Height) | disabled (`Auto`) | enabled                     | enabled |
+| Offset              | hidden            | enabled                     | hidden  |
+| Margin              | enabled           | hidden                      | hidden  |
+| Gutter              | enabled           | hidden                      | hidden  |
 
 ## Behaviour
 

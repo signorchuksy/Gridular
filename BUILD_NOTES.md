@@ -10,16 +10,16 @@ Written during the work, not after.
 **Built:** the complete web app, in seven phases, each with its own plan in
 `phases/` written before the code.
 
-| Phase | Delivered |
-| ----- | --------- |
-| 0 | Repo scaffold, `.gitignore`, README, AGENTS.md, phase plans, workspace-map row |
-| 1 | `grid.js` — pure geometry engine + 27-assertion self-check |
-| 2 | `breakpoints.js` + app shell — width entry, Tailwind presets, persistence |
-| 3 | Live columns guide, inspector, calculator readout |
-| 4 | Three guide types, guide list (add/select/toggle/remove), whole-set persistence |
-| 5 | Colour + opacity, full mode sets, per-mode field availability |
-| 6 | `export.js` — CSS, custom properties, JSON; copy-to-clipboard |
-| 7 | Responsive layout, keyboard nudging, edge states, docs |
+| Phase | Delivered                                                                       |
+| ----- | ------------------------------------------------------------------------------- |
+| 0     | Repo scaffold, `.gitignore`, README, AGENTS.md, phase plans, workspace-map row  |
+| 1     | `grid.js` — pure geometry engine + 27-assertion self-check                      |
+| 2     | `breakpoints.js` + app shell — width entry, Tailwind presets, persistence       |
+| 3     | Live columns guide, inspector, calculator readout                               |
+| 4     | Three guide types, guide list (add/select/toggle/remove), whole-set persistence |
+| 5     | Colour + opacity, full mode sets, per-mode field availability                   |
+| 6     | `export.js` — CSS, custom properties, JSON; copy-to-clipboard                   |
+| 7     | Responsive layout, keyboard nudging, edge states, docs                          |
 
 **Architecture:** no-build (plain HTML/CSS/vanilla JS). Three pure modules —
 `grid.js` (geometry), `breakpoints.js` (presets), `export.js` (emitters) — and

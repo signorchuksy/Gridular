@@ -395,17 +395,36 @@
     // Numeric readout — the calculator panel.
     var span = isColumns ? state.breakpoint.width : STAGE_HEIGHT;
     var solved = isColumns ? G.solveColumns(guide, span) : G.solveRows(guide, span);
+    var sizeLabel = isColumns ? "Column width" : "Row height";
+    var shownSize = Math.max(0, G.round2(solved.size));
     var readout = document.createElement("div");
     readout.className = "readout";
     readout.innerHTML =
       "<div>" +
-      (isColumns ? "Column width" : "Row height") +
+      sizeLabel +
       ": <b>" +
-      Math.max(0, G.round2(solved.size)) +
+      shownSize +
       "px</b></div>" +
       "<div>Page width: <b>" +
       state.breakpoint.width +
       "px</b></div>";
+
+    // Even-division warning: a stretch guide whose derived size is fractional
+    // means the grid cannot fill the span in whole pixels. Live — clears as
+    // soon as the values divide evenly.
+    if (isStretch && solved.size % 1 !== 0) {
+      var warn = document.createElement("div");
+      warn.className = "readout__warn";
+      warn.setAttribute("role", "status");
+      warn.textContent =
+        "Grid doesn't divide evenly — " +
+        sizeLabel.toLowerCase() +
+        " is " +
+        G.round2(solved.size) +
+        "px";
+      readout.appendChild(warn);
+    }
+
     els.inspectorBody.appendChild(readout);
 
     restoreFocus(focus);

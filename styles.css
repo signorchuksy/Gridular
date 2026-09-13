@@ -391,6 +391,12 @@ select.input {
   font-weight: 600;
 }
 
+.readout__warn {
+  color: #f5b950;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
 /* --- Output --- */
 
 .output {

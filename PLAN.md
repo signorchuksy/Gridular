@@ -10,7 +10,7 @@
 
 | #   | Decision       | Choice                                                                                                 |
 | --- | -------------- | ------------------------------------------------------------------------------------------------------ |
-| 1   | Output target  | **Web app only for now** — Figma plugin deferred until the web app is done                            |
+| 1   | Output target  | **Web app only for now** — Figma plugin deferred until the web app is done                             |
 | 2   | Stack          | **No-build** (HTML/CSS/vanilla JS)                                                                     |
 | 3   | v1 scope       | **Single breakpoint**, with Tailwind presets + custom entry; happy path = user enters their breakpoint |
 | 4   | Repo           | **Keep the name Gridular, reuse `signorchuksy/Gridular`**                                              |
@@ -142,16 +142,16 @@ scope, files touched, the exact checks, and exit criteria. A phase is only
 "done" when its checks pass and its results are recorded in the phase file.
 No phase starts before the previous one's exit criteria are met.
 
-| Phase | Name | Plan file | Status |
-| ----- | ---- | --------- | ------ |
-| 0 | Repo setup + scaffolding | `phases/phase-0-repo-setup.md` | done |
-| 1 | Geometry engine + calculator parity | `phases/phase-1-engine.md` | done |
-| 2 | Breakpoint entry (happy path) | `phases/phase-2-breakpoints.md` | done |
-| 3 | Single guide, live preview | `phases/phase-3-live-preview.md` | done |
-| 4 | Three guide types + stacking | `phases/phase-4-guides.md` | done |
-| 5 | Colour + modes | `phases/phase-5-modes.md` | done |
-| 6 | Output (CSS / tokens) | `phases/phase-6-output.md` | done |
-| 7 | Polish + docs | `phases/phase-7-polish.md` | done |
+| Phase | Name                                | Plan file                        | Status |
+| ----- | ----------------------------------- | -------------------------------- | ------ |
+| 0     | Repo setup + scaffolding            | `phases/phase-0-repo-setup.md`   | done   |
+| 1     | Geometry engine + calculator parity | `phases/phase-1-engine.md`       | done   |
+| 2     | Breakpoint entry (happy path)       | `phases/phase-2-breakpoints.md`  | done   |
+| 3     | Single guide, live preview          | `phases/phase-3-live-preview.md` | done   |
+| 4     | Three guide types + stacking        | `phases/phase-4-guides.md`       | done   |
+| 5     | Colour + modes                      | `phases/phase-5-modes.md`        | done   |
+| 6     | Output (CSS / tokens)               | `phases/phase-6-output.md`       | done   |
+| 7     | Polish + docs                       | `phases/phase-7-polish.md`       | done   |
 
 **Web app complete 2026-09-13.** See `BUILD_NOTES.md` for what was built, the
 bugs found during verification, and what was deferred.
@@ -164,42 +164,42 @@ the web app is complete; `grid.js` stays pure so it can be reused then.
 **Phase 0 — Repo setup + scaffolding.** `git init`, `.gitignore`, initial commit,
 reuse the `signorchuksy/Gridular` remote, AGENTS.md stub, `phases/` folder,
 workspace-map row.
-*Exit:* repo versioned and pushed; phase plans exist.
+_Exit:_ repo versioned and pushed; phase plans exist.
 
 **Phase 1 — Geometry engine + calculator parity.** `grid.js` with the stretch
 solver and the fixed-mode solver, plus a self-check page asserting parity.
-*Exit:* `960 / 4 / 20 / 20 → 215` and `960 / 12 / 20 / 10 → 60`-class checks pass
+_Exit:_ `960 / 4 / 20 / 20 → 215` and `960 / 12 / 20 / 10 → 60`-class checks pass
 against `RESEARCH.md §1b`; rounding rule chosen and asserted; offset origin
 decided and asserted.
 
 **Phase 2 — Breakpoint entry (happy path).** `breakpoints.js`: Tailwind presets
 (`sm 640`, `md 768`, `lg 1024`, `xl 1280`, `2xl 1536`) + custom width entry. Happy
 path = the user types their breakpoint width.
-*Exit:* entering a width sets the canvas; a preset fills the width; custom entry
+_Exit:_ entering a width sets the canvas; a preset fills the width; custom entry
 persists across reload.
 
 **Phase 3 — Single guide, live preview.** One columns guide on a preview stage;
 Count/Gutter/Margin live in Stretch; Width/Offset live in fixed modes.
-*Exit:* any input updates the overlay with no reload; both mode families render.
+_Exit:_ any input updates the overlay with no reload; both mode families render.
 
 **Phase 4 — Three guide types + stacking.** Uniform grid / Columns / Rows, the
 guide list with `+`, eye toggle, remove, select, and the floating inspector card
 (type switcher top-left, × top-right, divider).
-*Exit:* ≥3 guides coexist, toggle independently, persist across reload.
+_Exit:_ ≥3 guides coexist, toggle independently, persist across reload.
 
 **Phase 5 — Colour + modes.** Hex + opacity; columns `Left/Center/Right/Stretch`,
 rows `Top/Center/Bottom/Stretch`, with correct field availability per mode
 (Width/Height + Offset for fixed; Margin + Gutter for stretch only).
-*Exit:* each mode renders distinct, correct geometry; the inspector shows only
+_Exit:_ each mode renders distinct, correct geometry; the inspector shows only
 fields valid for the active mode.
 
 **Phase 6 — Output.** `export.js`: CSS grid snippet, `:root` custom properties,
 JSON token shape; copy-to-clipboard. Optional: URL permalink.
-*Exit:* copied CSS reproduces the on-screen grid in a scratch page.
+_Exit:_ copied CSS reproduces the on-screen grid in a scratch page.
 
 **Phase 7 — Polish + docs.** Responsive UI, keyboard entry, README with a
 live-demo path, build note.
-*Exit:* build note written during (not after) the work; workspace map updated.
+_Exit:_ build note written during (not after) the work; workspace map updated.
 
 **Optional later:** multi-breakpoint comparison, Illustrator/PNG-style export,
 layout-guide styles (named, reusable, copy/paste — a Figma feature worth
