@@ -118,6 +118,7 @@
     outputTabs: document.getElementById("output-tabs"),
     outputCode: document.getElementById("output-code"),
     outputCopy: document.getElementById("output-copy"),
+    themeToggle: document.getElementById("theme-toggle"),
   };
 
   function selectedGuide() {
@@ -683,6 +684,24 @@
     setState({ selectedGuideId: null });
   });
 
+  els.themeToggle.addEventListener("click", function () {
+    var next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+    document.documentElement.dataset.theme = next;
+    try {
+      window.localStorage.setItem("gridular.theme", next);
+    } catch (e) {
+      /* storage unavailable — non-fatal */
+    }
+    updateThemeToggle();
+  });
+
+  function updateThemeToggle() {
+    var isLight = document.documentElement.dataset.theme === "light";
+    els.themeToggle.textContent = isLight ? "☀" : "◐";
+    els.themeToggle.setAttribute("aria-label", isLight ? "Switch to dark mode" : "Switch to light mode");
+    els.themeToggle.title = isLight ? "Switch to dark mode" : "Switch to light mode";
+  }
+
   els.outputTabs.addEventListener("click", function (e) {
     var tab = e.target.closest(".tab");
     if (!tab) return;
@@ -725,6 +744,26 @@
   }
 
   // --- Init ---
+
+  // Theme: URL ?theme= override, else saved preference, else dark.
+  var urlTheme = new URLSearchParams(window.location.search).get("theme");
+  var savedTheme = "dark";
+  try {
+    savedTheme = window.localStorage.getItem("gridular.theme") || "dark";
+  } catch (e) {
+    /* storage unavailable */
+  }
+  var initialTheme = urlTheme === "light" || urlTheme === "dark" ? urlTheme : savedTheme;
+  document.documentElement.dataset.theme = initialTheme === "light" ? "light" : "dark";
+  if (urlTheme) {
+    // Persist the override so navigation keeps it.
+    try {
+      window.localStorage.setItem("gridular.theme", document.documentElement.dataset.theme);
+    } catch (e) {
+      /* storage unavailable */
+    }
+  }
+  updateThemeToggle();
 
   BP.PRESETS.forEach(function (preset) {
     var btn = document.createElement("button");
