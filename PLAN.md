@@ -201,9 +201,40 @@ _Exit:_ copied CSS reproduces the on-screen grid in a scratch page.
 live-demo path, build note.
 _Exit:_ build note written during (not after) the work; workspace map updated.
 
-**Optional later:** multi-breakpoint comparison, Illustrator/PNG-style export,
-layout-guide styles (named, reusable, copy/paste — a Figma feature worth
-mirroring).
+**Phase 8 — Even-division warning** (done 2026-09-13). Live amber warning in the
+readout when a stretch guide's derived size is fractional; clears automatically.
+Snap-to-whole-px was considered and cut — notification only, per user decision.
+_Plan:_ `phases/phase-8-even-division.md`.
+
+### Phase queue — pending work (added 2026-09-13)
+
+Refinements after the phase 0–7 build. One phase at a time; a phase plan is
+written before its code.
+
+| Phase | Name                        | What                                                                                | Status                           |
+| ----- | --------------------------- | ----------------------------------------------------------------------------------- | -------------------------------- |
+| 8     | Even-division warning       | Live warning when the grid doesn't divide evenly                                    | **done**                         |
+| 9     | Stage height control        | User-set stage height (replaces hard-coded 480px); rows guides solve against it     | next                             |
+| 10    | Rows/grid output emitters   | Output panel currently emits the columns guide only; add rows + uniform-grid output | queued                           |
+| 11    | Shareable URL permalink     | Encode the whole state in the URL hash so a layout can be shared                    | queued                           |
+| 12    | Layout-guide styles         | Named, reusable, copy/paste guide presets (mirrors a Figma feature)                 | queued                           |
+| 13    | Multi-breakpoint comparison | View two breakpoints side by side                                                   | queued                           |
+| 14    | Image export                | PNG-style export of the overlay (gridcalculator.dk offers AI/PS/PNG)                | queued                           |
+| 15    | Figma plugin                | Separate project; reuses `grid.js` unchanged                                        | deferred until web app is "done" |
+
+**Notes:**
+
+- Phase 9 resolves the "sizing" request: the stage height is the missing
+  control. Rows guides currently solve against a hard-coded 480px.
+- The rows/columns "collision" question is still open — the user's meaning is
+  unconfirmed. It may be visual (row bands and column bands overlap on the
+  stage) or mathematical. Clarify before planning it; it may fold into phase 9
+  or become its own phase.
+- Phase 10 addresses the known limitation that output only derives from the
+  columns guide.
+
+**Optional later:** Illustrator/PNG-style export (phase 14), layout-guide styles
+(phase 12), multi-breakpoint comparison (phase 13).
 
 ---
 
