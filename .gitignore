@@ -19,3 +19,6 @@ node_modules/
 
 # Logs
 *.log
+
+# Agent worktrees (branch-claims model — 16-loading-bay/00-works/09-branch-claims)
+.worktrees/
