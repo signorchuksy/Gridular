@@ -15,6 +15,8 @@ Tier-1 commands are installed per-repo (`.github/prompts/`); canonicals live in 
 /project-start ──▶ /prd ──▶ /log-decision ──▶ (implement) ──▶ /write-build-note ──▶ /prepare-commit ──▶ /session-wrap-up
       │                │            │                              │
       └── /bridge ─────┴────────────┴── claim/release at every gate  └── /project-map after any project change
+
+/task-loop ──▶ (a request lands in an existing repo) ──▶ gates 1-7 ──▶ /bridge, /write-build-note, /prepare-commit
 ```
 
 ## Commands and when NOT to use them
@@ -22,6 +24,7 @@ Tier-1 commands are installed per-repo (`.github/prompts/`); canonicals live in 
 | Command | Does | Do NOT use when |
 |---|---|---|
 | `/project-start` | 9-step protocol for new/resumed projects (folder sequencing, bridge, docs, git, ponytail) | the project already exists and just needs work — start working, don't re-run the protocol |
+| `/task-loop` | 7 gates for a request in an existing repo: repo, claim, home, size, phase, story, build, close | the request is a new project (use `/project-start`) or a research question (no repo work) |
 | `/prd` | scaffold/update PRD + PLAN + DECISIONS + RESEARCH | the docs exist and only need small updates — edit them directly |
 | `/log-decision` | append a decision with the losing alternative on record | the decision is trivial with no real alternative |
 | `/find-prior-work` | index-first search of the chat archive + map | you already know the chat ID or the answer |
@@ -40,6 +43,9 @@ Tier-1 commands are installed per-repo (`.github/prompts/`); canonicals live in 
 - **Acting on stale bridge claims** — use `/bridge`'s staleness check
 - **Inventing doc content** — mark inferred, ask the user
 - **Skipping the index refresh** at session end — use `/session-wrap-up`
+- **Starting repo work without the loop** — use `/task-loop`; it catches the missing
+  `.worktrees/` rule and the missing `project-info/` before work begins
+- **Working on `master`/`main`** — branch first; the only exception is the migration commit
 
 ## Tier-2 note
 
