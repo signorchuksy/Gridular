@@ -1,0 +1,9 @@
+# Markdown is the durable content layer in this workspace — never reformat it.
+#
+# Prettier normalizes `*emphasis*` to `_emphasis_` and escapes bare asterisks
+# (`/vc-*` becomes `/vc-\*`). On docs/plans/notes that is silent corruption:
+# the text still reads, but the original wording is altered and the diff is
+# noise. It corrupted 11 files in 04-vibe-chat on 2026-09-25.
+#
+# Shared workspace policy (04-vibe-chat/.prettierignore — same rationale).
+*.md
