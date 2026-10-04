@@ -67,8 +67,9 @@ summary (27 assertions).
 
 ## Status
 
-**Web app complete** (phases 0–7, 2026-09-13). See `PLAN.md` for the full plan,
-`phases/` for the per-phase plans, and `BUILD_NOTES.md` for what was built.
+**Web app complete** (phases 0–7, 2026-09-13). See `project-info/PLAN.md` for
+the full plan, `project-info/plans/00-web-app-v1/` for the per-phase plans, and
+`project-info/build-notes.md` for what was built.
 
 **Deferred:** the Figma plugin. It becomes its own project; `grid.js` stays pure
 so it can be reused then.
@@ -81,7 +82,9 @@ so it can be reused then.
 
 ## Docs
 
-- `RESEARCH.md` — evidence-grounded analysis of both references.
-- `PLAN.md` — product frame, architecture, phased build, decision record.
-- `phases/` — one plan per phase, written before the code.
-- `BUILD_NOTES.md` — what was built, bugs found, what was deferred.
+- `project-info/RESEARCH.md` — evidence-grounded analysis of both references.
+- `project-info/PLAN.md` — product frame, architecture, phased build, decision
+  record.
+- `project-info/plans/00-web-app-v1/` — one plan per phase, written before the
+  code.
+- `project-info/build-notes.md` — what was built, bugs found, what was deferred.
